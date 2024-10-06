@@ -8,20 +8,20 @@ Okada, Y. (1992), Internal deformation due to shear and tensile faults in a half
 
 ## Install okada4py:
 
-### Compilation
+This installation requires meson. Install meson and meson-python first (check it out with pip).
+
+### Install on a local directory
+
 ```
-export CC=gcc
-python setup.py build
+meson setup builddir --prefix /My/complete/path/to/the/install/dir
+meson compile -C builddir
+meson install -C builddir
 ```
 
-### Linking
+Then update your PYTHONPATH variable to have it visible for python.
+In your .bashrc, it would look like :
+export PYTHONPATH=/My/complete/path/to/the/install/dir:$PYTHONPATH
 
-Link in a user module directory (on MacOS it is usually in ~/Library/Python/3.7/lib/python/site-packages/):
-```
-python setup.py install --user
-```
-On some OS, it is sometimes better to run :
-```
-python setup.py install --user --prefix=
-```
+and I am too lazy to find out how to install this in the root of python (it does not work yet for me)
+
 
