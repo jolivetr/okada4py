@@ -8,7 +8,7 @@ extern "C" {
 #include "dc3d.h"
 #include "disloc3d.h"
 #include "Python.h"
-#include "arrayobject.h"
+#include "numpy/arrayobject.h"
 
 static PyObject *py_Okada(PyObject *self, PyObject *args)
 {

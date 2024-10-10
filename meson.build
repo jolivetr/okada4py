@@ -2,7 +2,7 @@ project('okada4py', 'cpp', version : '1.0.1', default_options : ['cpp_std=c++11'
 
 py3 = import('python').find_installation('python')
 
-numpy_include = run_command(py3, '-c', 'import numpy; print(numpy.get_include()+"/numpy")').stdout().strip()
+numpy_include = run_command(py3, '-c', 'import numpy; print(numpy.get_include())').stdout().strip()
 
 src = ['src/dc3d.cpp', 'src/disloc3d.cpp', 'src/okada92_py3.cpp']
 
