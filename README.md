@@ -22,6 +22,12 @@ Then update your PYTHONPATH variable to have it visible for python.
 In your .bashrc, it would look like :
 export PYTHONPATH=/My/complete/path/to/the/install/dir:$PYTHONPATH
 
-and I am too lazy to find out how to install this in the root of python (it does not work yet for me)
+### Install to the python root directory
+
+```
+meson setup builddir --prefix=$(python3 -c "import site; print(site.getsitepackages()[0])")
+meson compile -C builddir
+meson install -C builddir
+```
 
 
