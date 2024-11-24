@@ -15,7 +15,7 @@ static PyObject *py_Okada(PyObject *self, PyObject *args)
     // Arguments for disloc3d
     double *models;         // Dislocations [nmod x 10]: [length, width, depth, dip, strike, xc, yc, ss, ds, ts]
     int nmod;               // Number of dislocations
-    double *stations;       // Stations [nstat x 3]: [xs, ys, zs]
+    double *stations;       // Stations [nstat x 4]: [xs, ys, zs,zrec]
     int nstat;              // Number of stations
     double mu;              // Shear modulus    (Used for stress computation)
     double nu;              // Poisson's ration
@@ -31,10 +31,11 @@ static PyObject *py_Okada(PyObject *self, PyObject *args)
     PyArrayObject *Py_length, *Py_width;    // Dislocation size
     PyArrayObject *Py_dip, *Py_strike;      // Dislocation orientation
     PyArrayObject *Py_ss, *Py_ds, *Py_ts;   // Strike-, Dip- and Tensile slip 
+    PyArrayObject *Py_zrec = (PyArrayObject *) Py_None; //initialize optional DEM argument to None
 
-    // import python arguments and check
     import_array1(NULL);
-    if (!PyArg_ParseTuple(args, "O!O!O!O!O!O!O!O!O!O!O!O!O!dd",
+    // import python arguments and check
+    if (!PyArg_ParseTuple(args, "O!O!O!O!O!O!O!O!O!O!O!O!O!dd|O!",
                 &PyArray_Type, &Py_xs, 
                 &PyArray_Type, &Py_ys, 
                 &PyArray_Type, &Py_zs, 
@@ -48,7 +49,8 @@ static PyObject *py_Okada(PyObject *self, PyObject *args)
                 &PyArray_Type, &Py_ss, 
                 &PyArray_Type, &Py_ds, 
                 &PyArray_Type, &Py_ts, 
-                &mu, &nu)) return NULL;
+                &mu, &nu,
+                &PyArray_Type, &Py_zrec)) return NULL;
 
     // Get problem size
     nmod = (int)Py_xc->dimensions[0];
@@ -89,7 +91,7 @@ static PyObject *py_Okada(PyObject *self, PyObject *args)
 
     // Allocate inputs for disloc3d
     models = (double *)calloc(nmod*10, sizeof(double));
-    stations = (double *)calloc(nstat*3, sizeof(double));
+    stations = (double *)calloc(nstat*4, sizeof(double));
 
     // Fill in models
     for (size_t i=0; i<nmod; ++i)
@@ -115,9 +117,15 @@ static PyObject *py_Okada(PyObject *self, PyObject *args)
     // Fill in stations
     for (size_t i=0; i<nstat; ++i)
     {
-        stations[3*i] = ((double *) Py_xs->data)[i];
-        stations[3*i+1] = ((double *) Py_ys->data)[i];
-        stations[3*i+2] = ((double *) Py_zs->data)[i];
+        stations[4*i] = ((double *) Py_xs->data)[i];
+        stations[4*i+1] = ((double *) Py_ys->data)[i];
+        stations[4*i+2] = ((double *) Py_zs->data)[i];
+        if (Py_zrec == (PyArrayObject *) Py_None){
+            stations[4*i+3] = 0.0; //set value for station elevations to zero if no DEM is provided (default)
+        }
+        else{
+            stations[4*i+3] = ((double *) Py_zrec->data)[i];
+        }
     }
 
     // Call disloc3d
@@ -143,11 +151,12 @@ PyDoc_STRVAR(
     pyOkada_doc,
     "Okada 92 function for computation of displacements, strain and stresses in 3D\n"
     "\n"
-    "       Arguments: (xs, ys, zs, xc, yc, depth, length, width, dip, strike, StrikeSlip, DipSlip, Tensile, mu, nu)\n"
+    "       Arguments: (xs, ys, zs, xc, yc, depth, length, width, dip, strike, StrikeSlip, DipSlip, Tensile, mu, nu, zrec)\n"
     "                   All arguments are arrays, except mu (Shear modulus) and nu (Poisson's ration).\n"
     "                   xs : Stations x coordinates dims=[nstat] \n"
     "                   ys : Stations y coordinates dims=[nstat] \n"
     "                   zs : Stations z coordinates dims=[nstat] \n"
+    "                 zrec : Station elevations dims=[nstat] \n"
     "                   xc : Dislocation Center x coordinates dims=[nmods] \n"
     "                   yc : Dislocation Center y coordinates dims=[nmods]\n"
     "                depth : Dislocation Center Depth dims=[nmods] \n"

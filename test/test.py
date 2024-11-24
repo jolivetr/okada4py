@@ -1,5 +1,4 @@
 import numpy as np
-
 import okada4py as ok92
 
 #-----------------------------------
@@ -12,6 +11,7 @@ xs, ys = np.meshgrid(xs, ys)
 xs = xs.flatten()
 ys = ys.flatten()
 zs = np.zeros(xs.shape)
+zrec = zs + 5*(np.exp(-1*((xs/4+2)**2 + (ys/4+2)**2))) #topographic surface
 
 #-----------------------------------
 # 2. Make a dislocation
@@ -82,15 +82,23 @@ Uyy = gradienty[0]
 Uxy = 0.5*(Uxy + Uyx)
 Sxy = mu*Uxy
 
+#------------------------------------------------
+# 4. Run the okada92 routine with topographic DEM
+#------------------------------------------------
+ut, dt, st, flagt, flag2t = ok92.okada92(xs, ys, zs, xc, yc, depth, length, width, dip, strike, ss, ds, ts, mu, nu, zrec)
+ut = ut.reshape((xs.shape[0], 3))
+
 
 #-----------------------------------
-# 4. Plot 
+# 5. Plot 
 #-----------------------------------
 
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.rc('image', cmap='seismic')
 
 plt.figure(1)
-plt.title('Okada 92')
+plt.suptitle('Okada 92')
 plt.subplot(131)
 plt.scatter(xs, ys, s=1.0, c=u[:,0], linewidth=0.0) 
 plt.colorbar(orientation='horizontal', shrink=1.)
@@ -106,7 +114,21 @@ plt.title('Stress')
 plt.scatter(xs, ys, s=1.0, c=Sigmaxy, linewidth=0.0, vmin=-1e9, vmax=1e9)
 plt.colorbar()
 
+plt.figure(3)
+plt.title("Topographic Surface")
+plt.scatter(xs, ys, c=zrec, linewidth=0.0, cmap='terrain')
+plt.colorbar()
+
+plt.figure(4)
+plt.suptitle('Okada 92 with topographic correction')
+plt.subplot(131)
+plt.scatter(xs, ys, s=1.0, c=ut[:,0], linewidth=0.0) 
+plt.colorbar(orientation='horizontal', shrink=1.)
+plt.subplot(132)
+plt.scatter(xs, ys, s=1.0, c=ut[:,1], linewidth=0.0) 
+plt.colorbar(orientation='horizontal', shrink=1.)
+plt.subplot(133)
+plt.scatter(xs, ys, s=1.0, c=ut[:,2], linewidth=0.0) 
+plt.colorbar(orientation='horizontal', shrink=1.)
+
 plt.show()
-
-
-

@@ -20,7 +20,7 @@ int main()
 
     // Input
     models = (double *)calloc(10*nmod, sizeof(double));
-    stations = (double *)calloc(3*nstat, sizeof(double));
+    stations = (double *)calloc(4*nstat, sizeof(double));
 
     // Output
     uout = (double *)calloc(3*nstat, sizeof(double));

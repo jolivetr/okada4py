@@ -18,7 +18,7 @@ void disloc3d(double *models, int nmod,
 {
     // input arguments
     //  models      [nmod x 10]
-    //  stations    [nstat x 3]
+    //  stations    [nstat x 4]
     //  mu          [1 x 1]
     //  nu          [1 x 1]
     
@@ -72,7 +72,7 @@ void disloc3d(double *models, int nmod,
 
     for (i = 0; i < nstat; i++)
     {
-        stat  = &stations[3*i];
+        stat  = &stations[4*i];
         flag  = &flagout[i];
         if (using_flag2) { flag2 = &flagout2[nmod*i]; }
 
@@ -81,7 +81,7 @@ void disloc3d(double *models, int nmod,
         if (stat[2] > 0)
         {
             *flag += 1;
-            fprintf(stderr, "Warning: Positive depth given. (station %d)\n", i);
+            fprintf(stderr, "Warning: Positive depth given. (station %d) \n", i);
         }
         else
         {
@@ -103,7 +103,7 @@ void disloc3d(double *models, int nmod,
                 disl1 = model[7];
                 disl2 = model[8];
                 disl3 = model[9];
-                depth = model[2];
+                depth = model[2]+stat[3];
                 al1 = model[0]/2;
                 al2 = al1;
                 aw1 = model[1]/2;
