@@ -26,30 +26,6 @@ This builds the extension with `meson-python` and installs `okada4py` into the a
 
 `pip` will install the Python build requirements declared in `pyproject.toml`. You only need a working C++ toolchain available on your system.
 
-### Publish on PyPI
-
-The repository now includes a GitHub Actions workflow that builds the source distribution and wheel on Linux and macOS for multiple Python versions.
-
-For PyPI trusted publishing, register this GitHub Actions publisher on PyPI:
-
-1. Owner: `jolivetr`
-2. Repository: `okada4py`
-3. Workflow: `.github/workflows/python-package.yml`
-4. Environment: `pypi`
-
-To publish a release on PyPI:
-
-1. Create a GitHub release from a version tag.
-2. Configure PyPI trusted publishing for this repository using the values above.
-3. Publish the GitHub release to trigger the upload job.
-
-Before tagging a release locally, you can verify the packaging with:
-
-```bash
-python -m build
-python -m pip install --force-reinstall dist/*.whl
-```
-
 ### Install on a local directory
 
 ```
