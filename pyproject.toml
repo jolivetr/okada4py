@@ -1,0 +1,49 @@
+[build-system]
+requires = [
+    "meson-python>=0.16",
+    "numpy>=1.20",
+]
+build-backend = "mesonpy"
+
+[project]
+name = "okada4py"
+version = "1.0.1"
+description = "Python bindings for the Okada (1992) dislocation solution"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Romain Jolivet" },
+]
+maintainers = [
+    { name = "Romain Jolivet" },
+]
+keywords = ["geophysics", "dislocation", "okada", "earthquake", "deformation"]
+dependencies = [
+    "numpy>=1.20",
+]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: C++",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Homepage = "https://github.com/jolivetr/okada4py"
+Repository = "https://github.com/jolivetr/okada4py"
+Issues = "https://github.com/jolivetr/okada4py/issues"
+
+[tool.cibuildwheel]
+build-frontend = "build"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
